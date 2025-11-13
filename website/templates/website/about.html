@@ -1,11 +1,14 @@
 {% extends 'website/base.html' %}
 
     {% block 'contenu_principal' %}
-        {% include 'website/sections/banner.html' %}
-        {% include 'website/sections/about.html' %}
-        {% include 'website/sections/service.html' %}
-        {% include 'website/sections/paralax.html' %}
-        {% include 'website/sections/map.html' %}
+        {% include 'website/sections/banner.html' with banner_image="banner-img-03" banner_subtitle="Meet with us" banner_title="Contact us"%}
+        {% include 'website/sections/smil.html' %}
+        {% include 'website/sections/since.html' %}
+        {% include 'website/sections/ourteam.html' %}
+        {% include 'website/sections/testimonial.html' %}
+        {% include 'website/sections/awards.html' %}
+
+
     {% endblock %}
 
     {% block 'script' %}

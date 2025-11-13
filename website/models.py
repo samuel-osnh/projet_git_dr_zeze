@@ -78,4 +78,20 @@ class Menu(models.Model):
         unique_together = [['parent', 'ordre']]
 
 
+from django.db import models
+
+class TeamMember(models.Model):
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='team/')  # sera accessible via MEDIA_URL
+    twitter = models.URLField(blank=True, null=True)
+    facebook = models.URLField(blank=True, null=True)
+    dribbble = models.URLField(blank=True, null=True)
+    linkedin = models.URLField(blank=True, null=True)
+    behance = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 # python manage.py makemigrations

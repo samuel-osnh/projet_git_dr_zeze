@@ -19,6 +19,33 @@ def about(request):
 def contact(request):
     return render(request, 'website/contact.html')
 
+def services(request):
+    return render(request, 'website/our-services.html')
+
+def services_details(request):
+    return render(request, 'website/services-detail.html')
+
+def gallery(request):
+    return render(request, 'website/gallery.html')
+
+def team(request):
+    return render(request, 'website/team.html')
+
+def prix(request):
+    return render(request, 'website/pricing.html')
+
+def blog(request):
+    return render(request, 'website/blog.html')
+
+def blog1(request):
+    return render(request, 'website/single-blog-post-left-sidebar.html')
+
+def blog2(request):
+    return render(request, 'website/single-blog-post-right-sidebar.html')
+
+def blog3(request):
+    return render(request, 'website/single-blog-post-without-sidebar.html')
+
 def get_about():
     data = {
         'section_title': 'Since 1998',
