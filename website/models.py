@@ -15,6 +15,9 @@ class Page(models.Model):
         through='PageSection',  # Indique le modèle à utiliser pour la relation
         related_name='pages'  # Nom pour la relation inverse (Section.pages)
     )
+    class Meta:
+        db_table = "page"
+        
     def __str__(self):
         return f"Page {self.nom} ({self.titre})"
 
@@ -23,6 +26,11 @@ class Section(models.Model):
     nom = models.CharField(max_length=32, verbose_name="Nom de la section")
     titre = models.CharField(max_length=255)
     description = models.TextField(blank=True)
+    template = models.CharField(max_length=255, blank=True, verbose_name="nom de la section sans le html")
+    image = models.ImageField( blank=True, null=True, verbose_name="Image de la section")
+    
+    class Meta:
+        db_table = "section"
 
     def __str__(self):
         return f"Section {self.nom} ({self.titre})"
@@ -57,6 +65,8 @@ class PageSection(models.Model):
 
         # On pourrait aussi ajouter : unique_together = (('page', 'section'),)
         # si une section ne peut apparaître qu'une seule fois par page.
+        
+        db_table = "page_section"
 
 
     def __str__(self):
@@ -76,9 +86,9 @@ class Menu(models.Model):
         verbose_name_plural = "Menus"
         ordering = ['ordre']
         unique_together = [['parent', 'ordre']]
+        db_table = "menu"
 
 
-from django.db import models
 
 class TeamMember(models.Model):
     name = models.CharField(max_length=100)
@@ -90,8 +100,37 @@ class TeamMember(models.Model):
     linkedin = models.URLField(blank=True, null=True)
     behance = models.URLField(blank=True, null=True)
 
+    class Meta:
+        db_table = "team_member"
+
     def __str__(self):
         return self.name
 
 
-# python manage.py makemigrations
+class Banner(models.Model):
+    title = models.CharField(max_length=200)  # pour "About us"
+    subtitle = models.CharField(max_length=200, blank=True, null=True)  # pour "faster deliveries"
+    background_image = models.ImageField(upload_to='banners/')  # pour l'image de fond
+    animation = models.CharField(max_length=50, default='fadeInUp')  # type d'animation
+    animation_delay = models.IntegerField(default=200)  # delay en ms
+    created_at = models.DateTimeField(auto_now_add=True)  # date de création
+    
+    class Meta:
+        db_table = "banner"
+
+    def __str__(self):
+        return self.title
+
+class ServicesBlock(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    icon = models.CharField(max_length=100) 
+    order = models.PositiveIntegerField(default=0)
+    
+    class Meta:
+        db_table = "services_block"
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+    
