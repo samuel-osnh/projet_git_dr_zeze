@@ -91,7 +91,11 @@ class Menu(models.Model):
 
 
 class TeamMember(models.Model):
-    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default="Titre")
+    first_title = models.CharField(max_length=200, default="Texte par défaut" )
+    second_title = models.CharField(max_length=100, default="Texte par défaut")
+    name = models.CharField(max_length=200, default="Texte par défaut")
+    job = models.CharField(max_length=200, default="Texte par défaut")
     position = models.CharField(max_length=100)
     image = models.ImageField(upload_to='team/')  # sera accessible via MEDIA_URL
     twitter = models.URLField(blank=True, null=True)
@@ -102,13 +106,14 @@ class TeamMember(models.Model):
 
     class Meta:
         db_table = "team_member"
+        ordering = ['position']
 
     def __str__(self):
         return self.name
 
 
 class Banner(models.Model):
-    title = models.CharField(max_length=200)  # pour "About us"
+    title = models.CharField(max_length=200, default="Titre")  # pour "About us"
     subtitle = models.CharField(max_length=200, blank=True, null=True)  # pour "faster deliveries"
     background_image = models.ImageField(upload_to='banners/')  # pour l'image de fond
     animation = models.CharField(max_length=50, default='fadeInUp')  # type d'animation
@@ -120,7 +125,8 @@ class Banner(models.Model):
 
     def __str__(self):
         return self.title
-
+    
+# Gère les blocks de services (icon ou il y'a le smill)
 class ServicesBlock(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -129,6 +135,49 @@ class ServicesBlock(models.Model):
     
     class Meta:
         db_table = "services_block"
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+    
+# Gère  start shuppig with us, our galery et awards
+class GalleryImage(models.Model):
+    title = models.CharField(max_length=200, blank=True, null=True)
+    first_title = models.CharField(max_length=200, blank=True, null=True)
+    second_title = models.CharField(max_length=200, blank=True, null=True)
+    image = models.ImageField(upload_to='gallery/')
+    image_name = models.CharField(max_length=255, blank=True, null=True)
+    image_subtitle = models.CharField(max_length=255, blank=True, null=True)
+    button_text = models.CharField(max_length=100, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+    
+    class Meta:
+        db_table = "gallery_image"
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title if self.title else f"Image {self.id}"
+    
+#Gère le since, le sayor et le testimonial et le connect et le stay informed
+class ParagraphSection(models.Model):
+    title = models.CharField(max_length=200)
+    subtitle_title = models.CharField(max_length=200, blank=True, null=True)
+    second_title = models.CharField(max_length=50, blank=True, null=True)
+    description = models.TextField()
+    image = models.ImageField(upload_to='paragraph_sections/', blank=True, null=True)
+    little_image = models.ImageField(upload_to='paragraph_sections/', blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    daten = models.DateTimeField(blank=True, null=True)
+    message = models.IntegerField(blank=True, null=True)
+    vue = models.CharField(max_length=5, blank=True, null=True)
+    job = models.CharField(max_length=100, blank=True, null=True)
+    button = models.CharField(max_length=100, blank=True, null=True)
+    adressage = models.CharField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0, blank=True, null=True)
+    text_button = models.CharField(max_length=1000, blank=True, null=True)
+    
+    class Meta:
+        db_table = "paragraphe_section"
         ordering = ['order']
 
     def __str__(self):
