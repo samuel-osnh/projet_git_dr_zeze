@@ -1,0 +1,113 @@
+{% load static %}
+
+<section id="home">
+    <div id="slider">
+        <div id="rev_slider_24_1_wrapper" class="rev_slider_wrapper fullscreen-container" data-alias="website-intro" data-source="gallery" style="background:#000000;padding:0px;">
+            <div id="rev_slider_24_1" class="rev_slider fullscreenbanner tiny_bullet_slider" style="display:none;" data-version="5.4.1">
+                <ul>
+                    {% for slider in sliders %}
+                    
+                    {% if slider.est_actif %}
+                    
+                    <li data-index="rs-{{ slider.id }}" 
+                        data-transition="{{ slider.transition }}" 
+                        data-masterspeed="{{ slider.vitesse }}" 
+                        data-hideafterloop="0" 
+                        data-hideslideonmobile="off">
+
+                        {# Vérification essentielle pour éviter l'erreur "ValueError: The 'image' attribute has no file associated with it" #}
+                        {% if slider.image %}
+                            <img src="{{ slider.image.url }}" alt="{{ slider.titre|default:'Background Image' }}" 
+                                 data-bgposition="center center" 
+                                 data-bgfit="cover" 
+                                 data-bgrepeat="no-repeat" 
+                                 class="rev-slidebg" 
+                                 data-no-retina>
+                        {% else %}
+                            {# Utiliser une image de fallback statique si l'image est manquante pour des raisons de sécurité/design #}
+                            <img src="{% static 'img/fallback_default.jpg' %}" alt="Fallback Image" class="rev-slidebg">
+                        {% endif %}
+
+                        {% if slider.video %}
+                            <div class="rs-background-video-layer"
+                                data-forcerewind="on" 
+                                data-volume="mute" 
+                                data-videowidth="100%" 
+                                data-videoheight="100%" 
+                                data-videomp4="{{ slider.video.url }}" 
+                                data-videopreload="auto" 
+                                data-videoloop="loopandnoslidestop" 
+                                data-forceCover="1" 
+                                data-aspectratio="16:9" 
+                                data-autoplay="true" 
+                                data-autoplayonlyfirsttime="false">
+                            </div>
+                        {% endif %}
+
+                        {% for layer in slider.layers.all %}
+                            {# On utilise layer.ordre pour z-index, et l'ID du layer pour l'ID du calque #}
+
+                            {% if layer.type_layer == 'text' %}
+                            <div class="tp-caption tp-resizeme"
+                                 id="slide-{{ slider.id }}-layer-{{ layer.id }}"
+                                 data-x="['{{ layer.x }}','{{ layer.x }}','{{ layer.x }}','{{ layer.x }}']"
+                                 data-y="['{{ layer.y }}','{{ layer.y }}','{{ layer.y }}','{{ layer.y }}']"
+                                 data-voffset="['{{ layer.decalage_vertical }}','{{ layer.decalage_vertical }}','{{ layer.decalage_vertical }}','{{ layer.decalage_vertical }}']"
+                                 data-hoffset="['{{ layer.decalage_horizontal }}','{{ layer.decalage_horizontal }}','{{ layer.decalage_horizontal }}','{{ layer.decalage_horizontal }}']"
+                                 
+                                 {# Simplification Responsive : Utilisation de la taille unique entrée et ajout de valeurs par défaut #}
+                                 data-fontsize="['{{ layer.fontsize|default:"90" }}','{{ layer.fontsize|default:"90" }}','50','30']"
+                                 data-lineheight="['{{ layer.lineheight|default:"95" }}','{{ layer.lineheight|default:"95" }}','55','35']"
+                                 
+                                 data-width="['none','none','550','360']"
+                                 data-height="['none','none','none','none']"
+                                 data-whitespace="['nowrap']"
+                                 data-type="text"
+                                 data-frames='[{"delay":{{ layer.delai }},"speed":{{ layer.duree }},"frame":"0","from":"sX:0.9;sY:0.9;opacity:0;fb:20px;","to":"o:1;fb:0;","ease":"Power3.easeInOut"}]'
+                                 style="z-index:{{ layer.ordre }}; white-space: nowrap; font-weight:600; color:#ffffff; font-family:Poppins; font-size:{{ layer.fontsize|default:'90' }}px; line-height:{{ layer.lineheight|default:'95' }}px; letter-spacing:-5px;">
+                                 {{ layer.contenu|safe }}
+                            </div>
+                            
+                            {% elif layer.type_layer == 'button' %}
+                            <a href="{{ layer.lien }}" class="tp-caption rev-btn tp-resizeme"
+                               data-x="['center','center','center','center']"
+                               data-y="['middle','middle','middle','middle']"
+                               data-voffset="['{{ layer.decalage_vertical|default:'100' }}','{{ layer.decalage_vertical|default:'100' }}','{{ layer.decalage_vertical|default:'100' }}','{{ layer.decalage_vertical|default:'100' }}']"
+                               data-hoffset="['{{ layer.decalage_horizontal }}','{{ layer.decalage_horizontal }}','{{ layer.decalage_horizontal }}','{{ layer.decalage_horizontal }}']"
+                               data-width="250"
+                               data-height="none"
+                               data-whitespace="nowrap"
+                               data-type="button"
+                               data-frames='[{"delay":{{ layer.delai }},"speed":{{ layer.duree }},"frame":"0","from":"sX:0.9;sY:0.9;opacity:0;fb:20px;","to":"o:1;fb:0;","ease":"Power3.easeInOut"}]'
+                               style="z-index:{{ layer.ordre }}; min-width:250px; max-width:250px; line-height:60px; font-weight:600; color:#fff; font-family:Poppins; background-color:#D22701; border-radius:30px; text-align:center; text-decoration:none;">
+                                {{ layer.contenu }}
+                            </a>
+                            
+                            {% elif layer.type_layer == 'shape' %}
+                            <div class="tp-caption tp-shape tp-shapewrapper"
+                                 id="slide-{{ slider.id }}-layer-{{ layer.id }}"
+                                 data-x="['center']"
+                                 data-y="['middle']"
+                                 data-width="full"
+                                 data-height="full"
+                                 data-type="shape"
+                                 data-frames='[{"delay":{{ layer.delai }},"speed":{{ layer.duree }},"frame":"0","from":"opacity:0;","to":"o:1;","ease":"Power4.easeOut"}]'
+                                 style="z-index:{{ layer.ordre }}; background-color:{{ layer.contenu|default:'rgba(0, 0, 0, 0.5)' }};">
+                            </div>
+
+                            {# Le type 'video' est géré sur le SLIDER PRINCIPAL, pas en tant que Layer. #}
+                            {# Si vous vouliez la vidéo comme un Layer, vous devriez revoir votre logique de modèle. #}
+                            
+                            {% endif %}
+                            
+                        {% endfor %}
+                    </li>
+                    
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                <div class="tp-bannertimer tp-bottom" style="height: 5px; background: #D22701;"></div>
+            </div>
+        </div>
+    </div>
+</section>

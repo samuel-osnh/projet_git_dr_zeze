@@ -1,0 +1,33 @@
+{% load static %}
+
+<!-- CLIENTS / AWARDS STARTS -->
+{% if awards_block %}
+<section class="clients pt-0">
+    <div class="container">
+        <!-- TITRE ET SOUS-TITRE -->
+        <div class="row">
+            <div class="col-12 animated" data-animation="fadeInUp" data-animation-delay="100">
+                <div class="herotext text-center">
+                    <div class="lrline pb-3"><span>{{ awards_block.first_title }}</span></div>
+                    <h2>{{ awards_block.title }}</h2>
+                    {% if awards_block.second_title %}
+                        <p>{{ awards_block.second_title }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- IMAGES DU BLOC -->
+        <div class="row text-center pt-5">
+            {% for img in awards_block.images.all %}
+                <div class="col-6 col-md-3 animated" data-animation="fadeInUp" data-animation-delay="200">
+                    <img src="{{ img.image.url }}" class="img-fluid" alt="{{ img.image_name }}">
+                </div>
+            {% empty %}
+                <p class="text-center">No awards images found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<!-- /.. CLIENTS / AWARDS ENDS -->

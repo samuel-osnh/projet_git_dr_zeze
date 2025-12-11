@@ -1,0 +1,81 @@
+{% load static %}
+
+<!-- NAVIGATION STARTS -->
+<nav id="navigation" class="navbar navbar-expand-lg navbar-light fixed-top bg-light">
+    <div class="container-fluid">
+        <!-- Logos -->
+        <a class="navbar-brand white-logo" href="{% url 'website:index' %}">
+            <img src="{% static 'website/assets/imgs/logo-white.png' %}" class="img-fluid" alt="Logo Blanc">
+        </a>
+        <a class="navbar-brand black-logo" href="{% url 'website:index' %}">
+            <img src="{% static 'website/assets/imgs/logo.png' %}" class="img-fluid" alt="Logo Noir">
+        </a>
+
+        <!-- Toggler -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menu -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ms-auto">
+                <!-- Home -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'website:index' %}">Home</a>
+                </li>
+
+                <!-- About -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'website:about' %}">About</a>
+                </li>
+
+                <!-- Services Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'services' or request.resolver_match.url_name == 'services_detail' %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'website:services' %}">Services</a></li>
+                        <li><a class="dropdown-item {% if request.resolver_match.url_name == 'services_detail' %}active{% endif %}" href="{% url 'website:services_detail' %}">Services Details</a></li>
+                    </ul>
+                </li>
+
+                <!-- Gallery -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}" href="{% url 'website:gallery' %}">Gallery</a>
+                </li>
+
+                <!-- Team -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'team' %}active{% endif %}" href="{% url 'website:team' %}">Team</a>
+                </li>
+
+                <!-- Pricing -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'pricing' %}active{% endif %}" href="{% url 'website:pricing' %}">Pricing</a>
+                </li>
+
+                <!-- Blog Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'blog' or request.resolver_match.url_name == 'single_blog_left_sidebar' or request.resolver_match.url_name == 'single_blog_right_sidebar' or request.resolver_match.url_name == 'single_blog_without_sidebar' %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {% if request.resolver_match.url_name == 'blog' %}active{% endif %}" href="{% url 'website:blog' %}">Blog Page</a></li>
+                        <li><a class="dropdown-item {% if request.resolver_match.url_name == 'single_blog_left_sidebar' %}active{% endif %}" href="{% url 'website:single_blog_left_sidebar' %}">Single Post 01</a></li>
+                        <li><a class="dropdown-item {% if request.resolver_match.url_name == 'single_blog_right_sidebar' %}active{% endif %}" href="{% url 'website:single_blog_right_sidebar' %}">Single Post 02</a></li>
+                        <li><a class="dropdown-item {% if request.resolver_match.url_name == 'single_blog_without_sidebar' %}active{% endif %}" href="{% url 'website:single_blog_without_sidebar' %}">Single Post 03</a></li>
+                    </ul>
+                </li>
+
+                <!-- Contact -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'website:contact' %}">Contact</a>
+                </li>
+            </ul>
+
+            <!-- BUY NOW Button -->
+            <span class="ps-3 d-none d-lg-block">
+                <a href="https://themeforest.net/item/this-one-one-page-responsive-website-template/7236268?ref=alia" class="btn btn-primary" target="_blank">BUY NOW</a>
+            </span>
+        </div>
+    </div>
+</nav>
+<!-- NAVIGATION ENDS -->

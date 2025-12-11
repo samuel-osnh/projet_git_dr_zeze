@@ -1,0 +1,13 @@
+{% extends 'website/base.html' %}
+
+    {% block 'contenu_principal' %}
+        {% include 'website/sections/banner.html' with banner_image="banner-img-05" banner_subtitle="Meet Cheap Rates" banner_title="Pricing"%}
+        {% include 'website/sections/prix.html' %}
+        {% include 'website/sections/testimonial.html' %}
+
+
+    {% endblock %}
+
+    {% block 'script' %}
+            {% include 'website/partials/script.html'  %}
+    {% endblock %}

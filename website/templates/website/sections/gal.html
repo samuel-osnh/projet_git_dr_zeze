@@ -1,0 +1,77 @@
+{% load static %}
+
+<!-- PORTFOLIO STARTS -->
+<section id="portfolio" class="portfolio">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="herotext text-center animated" data-animation="fadeInUp" data-animation-delay="100">
+                    {% if gallery_block %}
+                        <div class="lrline pb-3"><span>{{ gallery_block.first_title }}</span></div>
+                        <h2>{{ gallery_block.title }}</h2>
+                        <h5 class="pt-2">{{ gallery_block.second_title }}</h5>
+                    {% else %}
+                        <div class="lrline pb-3"><span>Our Gallery</span></div>
+                        <h2>Seamless logistics, faster deliveries</h2>
+                        <h5 class="pt-2">Whatever item needs to be delivered or shipped, we're capable to do that!</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row pt-5 pb-3">
+            <div class="col-12">
+                <div id="options" class="animated" data-animation="fadeInUp" data-animation-delay="200">
+                    <ul id="filters" class="option-set clearfix" data-option-key="filter">
+                        <li><a href="#filter" data-option-value="*" class="selected">ALL</a></li>
+                        <li><a href="#filter" data-option-value=".roadandtruck">Road & Truck</a></li>
+                        <li><a href="#filter" data-option-value=".airplane">Airplane</a></li>
+                        <li><a href="#filter" data-option-value=".maritime">Maritime</a></li>
+                        <li><a href="#filter" data-option-value=".videos">Videos</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="make4columns portfolio-grid">
+
+                    {% if gallery_images %}
+                        {% for img in gallery_images %}
+                            <figure class="item {% if img.image_subtitle %}{{ img.image_subtitle|slugify }}{% else %}category{% endif %}">
+                                <div class="picture">
+                                    <img src="{{ img.image.url }}" alt="{{ img.image_name }}" style="width: 100%; height: 250px; object-fit: cover;">
+                                    
+                                    <!-- Overlay -->
+                                    <div class="text-overlay">
+                                        <div class="category">{{ img.image_subtitle }}</div>
+                                        <h2>
+                                            <a class="image-popup-vertical-fit" href="{{ img.image.url }}">
+                                                {{ img.image_name }}
+                                            </a>
+                                        </h2>
+                                    </div>
+                                    <div class="icon-overlay">
+                                        <div class="icon">
+                                            <a class="image-popup-vertical-fit" href="{{ img.image.url }}">
+                                                <i class="las la-expand-arrows-alt"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </figure>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Exemple statique si aucune image -->
+                        <p class="text-center">No images to display.</p>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /. PORTFOLIO ENDS -->

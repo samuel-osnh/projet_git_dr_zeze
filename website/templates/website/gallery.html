@@ -1,0 +1,14 @@
+{% extends 'website/base.html' %}
+
+    {% block 'contenu_principal' %}
+        {% include 'website/sections/banner.html' with banner_image="banner-img-03" banner_subtitle="faster deliveries" banner_title="Our Gallery"%}
+        {% include 'website/sections/smil.html' %}
+        {% include 'website/sections/gal.html' %}
+        {% include 'website/sections/testimonial.html' %}
+
+
+    {% endblock %}
+
+    {% block 'script' %}
+            {% include 'website/partials/script.html'  %}
+    {% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'website/base.html' %}
+
+    {% block 'contenu_principal' %}
+        {% include 'website/sections/banner.html' with banner=banners.0 %}
+        {% include 'website/sections/smil.html' %}
+        {% include 'website/sections/since.html' %}
+        {% include 'website/sections/ourteam.html' %}
+        {% include 'website/sections/testimonial.html' %}
+        {% include 'website/sections/awards.html' %}
+
+
+    {% endblock %}
+
+    {% block 'script' %}
+            {% include 'website/partials/script.html'  %}
+    {% endblock %}

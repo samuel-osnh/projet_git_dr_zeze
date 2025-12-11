@@ -1,0 +1,11 @@
+{% extends 'website/base.html' %}
+
+    {% block 'contenu_principal' %}
+        {% include 'website/sections/banner.html' with banner_image="banner-img-01" banner_subtitle="News & Events" banner_title="Blog"%}
+        {% include 'website/sections/bpage.html' %}
+
+    {% endblock %}
+
+    {% block 'script' %}
+            {% include 'website/partials/script.html'  %}
+    {% endblock %}

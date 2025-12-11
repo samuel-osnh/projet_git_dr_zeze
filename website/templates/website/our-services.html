@@ -1,0 +1,20 @@
+{% extends 'website/base.html' %}
+
+    {% block 'contenu_principal' %}
+    {% if banners %}
+        {% include 'website/sections/banner.html' with banner=banners.2 %}
+    {% else %}
+        <p>Aucun banner disponible.</p>
+    {% endif %}
+        {% include 'website/sections/smil.html' %}
+        {% include 'website/sections/shupping.html' %}
+        {% include 'website/sections/sayor.html' %}
+        {% include 'website/sections/testimonial.html' %}
+        {% include 'website/sections/awards.html' %}
+
+
+    {% endblock %}
+
+    {% block 'script' %}
+            {% include 'website/partials/script.html'  %}
+    {% endblock %}

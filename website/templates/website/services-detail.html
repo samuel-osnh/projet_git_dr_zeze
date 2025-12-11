@@ -1,0 +1,13 @@
+{% extends 'website/base.html' %}
+
+    {% block 'contenu_principal' %}
+        {% include 'website/sections/banner.html' with banner_image="banner-img-05" banner_subtitle="what we do" banner_title="Services Details"%}
+        {% include 'website/sections/jobs.html' %}
+
+
+
+    {% endblock %}
+
+    {% block 'script' %}
+            {% include 'website/partials/script.html'  %}
+    {% endblock %}
