@@ -91,23 +91,10 @@ class Menu(models.Model):
 
 
 
-class TeamMember(models.Model):
-    title = models.CharField(max_length=100, default="Titre")
-    first_title = models.CharField(max_length=200, default="Texte par défaut" )
-    second_title = models.CharField(max_length=100, default="Texte par défaut")
-    name = models.CharField(max_length=200, default="Texte par défaut")
-    job = models.CharField(max_length=200, default="Texte par défaut")
-    position = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='team/')  # sera accessible via MEDIA_URL
-    twitter = models.URLField(blank=True, null=True)
-    facebook = models.URLField(blank=True, null=True)
-    dribbble = models.URLField(blank=True, null=True)
-    linkedin = models.URLField(blank=True, null=True)
-    behance = models.URLField(blank=True, null=True)
 
     class Meta:
         db_table = "team_member"
-        ordering = ['position']
+        ordering = ['id']
 
     def __str__(self):
         return self.name
@@ -148,7 +135,12 @@ class Banner(models.Model):
 class ServicesBlock(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    icon = models.CharField(max_length=100) 
+    icon = models.ImageField(
+        upload_to='paragraph_sections/icons/', 
+        blank=True, 
+        null=True,
+        help_text="Icône associée à la section"
+    )
     order = models.PositiveIntegerField(default=0)
     
     class Meta:
@@ -196,16 +188,13 @@ class GalleryImage(models.Model):
     def __str__(self):
         return self.image_name if self.image_name else f"Image {self.id}"
 
-    
-from django.db import models
+
 
 class ParagraphSection(models.Model):
     SECTION_CHOICES = [
         ('since', 'Since'),
-        ('sayor', 'Sayor'),
-        ('testimonial', 'Testimonial'),
         ('connect', 'Connect'),
-        ('stay_informed', 'Stay Informed'),
+        
     ]
 
     section_type = models.CharField(
@@ -218,7 +207,7 @@ class ParagraphSection(models.Model):
     title = models.CharField(max_length=200)
     subtitle_title = models.CharField(max_length=200, blank=True, null=True)
     second_title = models.CharField(max_length=50, blank=True, null=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='paragraph_sections/', blank=True, null=True)
     little_image = models.ImageField(upload_to='paragraph_sections/', blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
@@ -328,3 +317,59 @@ class SliderLayer(models.Model):
     def __str__(self):
         return f"Layer {self.type_layer} pour slide {self.slide.id}"
 
+# ere Testimonials, Cheap Pricing, Our Team, Savor the Savings Stay Informed
+class TitleSection(models.Model):
+        SECTION_CHOICES = [
+        ('testimonials', 'Testimonials'),
+        ('cheap_pricing', 'Cheap Pricing'),
+        ('our_team', 'Our Team'),
+        ('savor_savings', 'Savor the Savings'),
+        ('stay_informed', 'Stay Informed'),
+    ]
+        title = models.CharField(max_length=200, help_text="Titre principal")
+        subtitle = models.CharField(max_length=200, blank=True, null=True, help_text="Sous-titre")
+        description = models.TextField(blank=True, null=True, help_text="Description longue")
+
+        class Meta:
+            verbose_name = "Section Titre"
+            verbose_name_plural = "Sections Titre"
+        
+
+        def __str__(self):
+           return self.title
+    
+
+class ParagraphTitleAndManyElement(models.Model):
+    
+    section = models.ForeignKey(
+        ParagraphSection,
+        on_delete=models.CASCADE,
+        related_name='elements',
+        help_text="Choisir la section à laquelle ce paragraphe appartient"
+    )
+    title = models.CharField(max_length=200, help_text="Titre principal")
+    subtitle = models.CharField(max_length=200, blank=True, null=True, help_text="Sous-titre")
+    description = models.TextField(blank=True, null=True, help_text="Description longue")
+    name = models.CharField(max_length=200, default="Texte par défaut")
+    job = models.CharField(max_length=200, default="Texte par défaut")
+    position = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='image/')  # sera accessible via MEDIA_URL
+    twitter = models.URLField(blank=True, null=True)
+    facebook = models.URLField(blank=True, null=True)
+    dribbble = models.URLField(blank=True, null=True)
+    linkedin = models.URLField(blank=True, null=True)
+    behance = models.URLField(blank=True, null=True)
+    button = models.CharField(max_length=100, blank=True, null=True, help_text="Text du bouton principal")
+    montant = models.IntegerField(null=True, blank=True)
+    avantage_prix = models.CharField(null=True, blank=True, max_length=200)
+    button_text = models.CharField(max_length=200, blank=True, null=True, help_text="Description du bouton principal")
+
+    order = models.PositiveIntegerField(default=0, blank=True, null=True, help_text="Ordre d'affichage")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Paragraph Title & Element"
+        verbose_name_plural = "Paragraph Titles & Elements"
+
+    def __str__(self):
+        return self.title

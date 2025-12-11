@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Banner, Page, Section, PageSection, Menu, TeamMember,Slider, BlockTitle
+from .models import Banner, Page, Section, PageSection, Menu, Slider, BlockTitle, ParagraphSection,ServicesBlock
 
 # -------------------------
 # Page d'accueil
@@ -8,8 +8,9 @@ def index(request):
     banners = Banner.objects.all().order_by('cree_le')
     menus = Menu.objects.all().order_by('ordre')
     sections = Section.objects.all()
-    team_members = TeamMember.objects.all()
     slides = Slider.objects.filter(est_actif=True)
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    
 
     awards_block = BlockTitle.objects.filter(section='awards').first()
     gallery_block = BlockTitle.objects.filter(section='gallery').first()
@@ -20,19 +21,28 @@ def index(request):
 
     # Récupération des 5 dernières images du bloc Shopping
     shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
 
+    
+    
     context = {
         'title': 'TP WEB L3 Info',
         'banners': banners,
         'menus': menus,
         'sections': sections,
-        'team_members': team_members,
         'sliders': slides,
         'awards_block': awards_block,
         'gallery_block': gallery_block,
         'shopping_block': shopping_block,
         'gallery_images': gallery_images,
         'shopping_images': shopping_images,
+        'since_section': since_section,
+        'services_blocks': services_blocks,
+        'connect_section': connect_section,
+
+        
     }
 
     return render(request, 'website/index.html', context)
@@ -100,10 +110,8 @@ def gallery(request):
 # Page Team
 # -------------------------
 def team(request):
-    team_members = TeamMember.objects.all()
     context = {
         'title': 'Team - TP WEB L3 Info',
-        'team_members': team_members,
     }
     return render(request, 'website/team.html', context)
 

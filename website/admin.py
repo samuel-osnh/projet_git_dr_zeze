@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Page, Section, PageSection, Menu, TeamMember, Banner, ServicesBlock, ParagraphSection, GalleryImage, Slider,SliderLayer,BlockTitle 
+from .models import Page, Section, PageSection, Menu, Banner, ServicesBlock, ParagraphSection, GalleryImage, Slider,SliderLayer,BlockTitle 
 
 
 # -----------------------
@@ -38,13 +38,7 @@ class MenuAdmin(admin.ModelAdmin):
     list_filter = ('parent',)
     ordering = ('ordre',)
 
-# -----------------------
-# Admin pour TeamMember
-# -----------------------
-@admin.register(TeamMember)
-class TeamMemberAdmin(admin.ModelAdmin):
-    list_display = ('name', 'position')
-    search_fields = ('name', 'position')
+
 
 # -----------------------
 # Admin pour Banner
@@ -85,15 +79,18 @@ class BlockTitleAdmin(admin.ModelAdmin):
 # ============================
 @admin.register(ParagraphSection)
 class ParagraphSectionAdmin(admin.ModelAdmin):
-    list_display = ("title", "subtitle_title", "second_title", "name", "job", "order")
+    list_display = (
+        "section_type", "title", "subtitle_title", "second_title", 
+        "name", "job", "order"
+    )
     search_fields = ("title", "subtitle_title", "name", "job")
-    list_filter = ("order", "daten")
+    list_filter = ("section_type", "order", "daten")
     ordering = ("order",)
     list_editable = ("order",)
 
     fieldsets = (
-        ("Titles", {
-            "fields": ("title", "subtitle_title", "second_title")
+        ("Section Type & Titles", {
+            "fields": ("section_type", "title", "subtitle_title", "second_title")
         }),
         ("Content", {
             "fields": ("description", "message", "vue", "text_button")
@@ -111,6 +108,7 @@ class ParagraphSectionAdmin(admin.ModelAdmin):
             "fields": ("order",)
         }),
     )
+    
 # ============================
 # ADMIN SLIDER
 
