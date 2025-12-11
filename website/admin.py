@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Page, Section, PageSection, Menu, Banner, ServicesBlock, ParagraphSection, GalleryImage, Slider,SliderLayer,BlockTitle 
+from .models import Page, Section, PageSection, Menu, Banner, ServicesBlock, ParagraphSection, GalleryImage, Slider,SliderLayer,BlockTitle,TitleSection,ParagraphTitleAndManyElement
 
 
 # -----------------------
@@ -157,3 +157,40 @@ class SliderLayerAdmin(admin.ModelAdmin):
     search_fields = ('contenu', 'lien')
     list_filter = ('type_layer', 'type_animation')
     ordering = ('ordre',)
+    
+
+# -----------------------------
+# Admin TitleSection
+# -----------------------------
+@admin.register(TitleSection)
+class TitleSectionAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subtitle', 'section_type')
+    list_filter = ('section_type',)
+    search_fields = ('title', 'subtitle', 'description',"image")
+    ordering = ('title',)
+    fieldsets = (
+        (None, {
+            'fields': ('section_type', 'title', 'subtitle', 'description',"image")
+        }),
+    )
+
+
+# -----------------------------
+# Admin ParagraphTitleAndManyElement
+# -----------------------------
+@admin.register(ParagraphTitleAndManyElement)
+class ParagraphTitleAndManyElementAdmin(admin.ModelAdmin):
+    list_display = ('section', 'position', 'order')
+    list_filter = ('section', 'position')
+    search_fields = ( 'description', 'name', 'job')
+    ordering = ('order',)
+    fieldsets = (
+        (None, {
+            'fields': (
+                'section',"description_carrouselle",
+                'name', 'job',"adresse", 'position','image_caroussel',
+                'twitter', 'facebook', 'linkedin', 'dribbble', 'behance',
+                'button', 'button_text', 'montant', 'avantage_prix', 'order'
+            )
+        }),
+    )

@@ -1,51 +1,69 @@
 {% load static %}
- <!-- TESTIMONIALS STARTS
-            ========================================================================= -->	
-        <section class="testimonials">
-            <div class="container">
-                <div class="row align-items-start align-items-md-center">
-                    <div class="col-12 col-lg-6 col-xl-6  testimonials-block" >
-                        <div class="herotext  animated" data-animation="fadeInUp" data-animation-delay="100">
-                            <div class="rightline pb-3"><span>Testimonials</span></div>
-                            <h2>Success stories from our client</h2>
-                        </div>
-                        <div class="testimonials-carousel pt-4   animated" data-animation="fadeInUp" data-animation-delay="300">
-                            <div class="testimonial">
-                                <div class="d-flex align-items-center">
-                                    <div class="pic"><img src="{% static 'website/assets/imgs/testimonials/1.jpg' %}" class="img-fluid" alt=""></div>
-                                    <div class="detail">
-                                        <div class="name">Alexandra Grant</div>
-                                        <div class="designation">los Angeles, usa</div>
-                                    </div>
-                                </div>
-                                <p class="pt-3">“ We are full-cycle software development and digital solutions company with rich expertise and focus on the latest technologies ”</p>
-                            </div>
-                            <div class="testimonial">
-                                <div class="d-flex align-items-center">
-                                    <div class="pic"><img src="{% static 'website/assets/imgs/testimonials/2.jpg' %}" class="img-fluid" alt=""></div>
-                                    <div class="detail">
-                                        <div class="name">Alexandra Grant</div>
-                                        <div class="designation">los Angeles, usa</div>
-                                    </div>
-                                </div>
-                                <p class="pt-3">“ We are full-cycle software development and digital solutions company with rich expertise and focus on the latest technologies ”</p>
-                            </div>
-                            <div class="testimonial">
-                                <div class="d-flex align-items-center">
-                                    <div class="pic"><img src="{% static 'website/assets/imgs/testimonials/3.jpg' %}" class="img-fluid" alt=""></div>
-                                    <div class="detail">
-                                        <div class="name">Alexandra Grant</div>
-                                        <div class="designation">los Angeles, usa</div>
-                                    </div>
-                                </div>
-                                <p class="pt-3">“ We are full-cycle software development and digital solutions company with rich expertise and focus on the latest technologies ”</p>
-                            </div>
-                        </div>
-                        <!--<div class="slider-counter"></div>-->
-                    </div>
-                    <div class="col-12 col-lg-6 col-xl-6 pe-3 ps-3 animated" data-animation="fadeInUp" data-animation-delay="400"><img src="{% static 'website/assets/imgs/testimonials/big.png' %}" class="img-fluid" alt=""></div>
+
+<section class="testimonials">
+    <div class="container">
+        <div class="row align-items-start align-items-md-center">
+
+            <!-- Texte de la section -->
+            <div class="col-12 col-lg-6 col-xl-6 testimonials-block">
+                <div class="herotext animated" data-animation="fadeInUp" data-animation-delay="100">
+
+                    {% if testimonial_section %}
+                        <div class="rightline pb-3"><span>{{ testimonial_section.title }}</span></div>
+
+                        {% if testimonial_section.subtitle %}
+                            <h2>{{ testimonial_section.subtitle }}</h2>
+                        {% endif %}
+
+                        {% if testimonial_section.description %}
+                            <h5>{{ testimonial_section.description }}</h5>
+                        {% endif %}
+                    {% else %}
+                        <div class="rightline pb-3"><span>Testimonials</span></div>
+                        <h2>Success stories from our client</h2>
+                        <h5>Découvrez ce que disent nos clients satisfaits.</h5>
+                    {% endif %}
                 </div>
+
+                <!-- Carrousel des témoignages -->
+                <div class="testimonials-carousel pt-4 animated" data-animation="fadeInUp" data-animation-delay="300">
+                    {% for element in testimonials %}
+                        <div class="testimonial">
+                            <div class="d-flex align-items-center">
+                                <div class="pic">
+                                    {% if element.image_caroussel %}
+                                        <img src="{{ element.image_caroussel.url }}" class="img-fluid" alt="{{ element.name }}">
+                                    {% else %}
+                                        <img src="{% static 'website/assets/imgs/testimonials/default.jpg' %}" class="img-fluid" alt="Default">
+                                    {% endif %}
+                                </div>
+                                <div class="detail">
+                                    <div class="name">{{ element.name }}</div>
+                                    <div class="designation">{{ element.job }}</div>
+                                </div>
+                            </div>
+
+                            {% if element.description_carrouselle %}
+                                <p class="pt-3">{{ element.description_carrouselle }}</p>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <p>Aucun témoignage disponible pour le moment.</p>
+                    {% endfor %}
+                </div>
+
             </div>
-        </section>
-        <!-- /.. TESTIMONIALS ENDS
-            ========================================================================= -->
+
+            <!-- IMAGE DE DROITE venant de TitleSection -->
+            <div class="col-12 col-lg-6 col-xl-6 pe-3 ps-3 animated" data-animation="fadeInUp" data-animation-delay="400">
+                {% if testimonial_section and testimonial_section.image %}
+                    <img src="{{ testimonial_section.image.url }}" class="img-fluid" alt="{{ testimonial_section.title }}">
+                {% else %}
+                    <img src="{% static 'website/assets/imgs/testimonials/big.png' %}" class="img-fluid" alt="Big Testimonial">
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
+    

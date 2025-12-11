@@ -1,63 +1,137 @@
 from django.shortcuts import render
 from .models import Banner, Page, Section, PageSection, Menu, Slider, BlockTitle, ParagraphSection,ServicesBlock
 
-# -------------------------
-# Page d'accueil
-# -------------------------
+from django.shortcuts import render
+from .models import (
+    Banner, Menu, Section, Slider, 
+    ParagraphSection, TitleSection, ParagraphTitleAndManyElement,
+    BlockTitle, ServicesBlock
+)
+
 def index(request):
+    # Bannières et menus
     banners = Banner.objects.all().order_by('cree_le')
     menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
     sections = Section.objects.all()
     slides = Slider.objects.filter(est_actif=True)
-    since_section = ParagraphSection.objects.filter(section_type='since').first()
     
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
 
+    # Blocs spécifiques
     awards_block = BlockTitle.objects.filter(section='awards').first()
     gallery_block = BlockTitle.objects.filter(section='gallery').first()
     shopping_block = BlockTitle.objects.filter(section='shopping').first()
 
-    # Récupération des 10 dernières images du bloc Gallery
     gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
-
-    # Récupération des 5 dernières images du bloc Shopping
     shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
     services_blocks = ServicesBlock.objects.order_by('order')[:3]
     
-    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
 
-    
-    
+
     context = {
         'title': 'TP WEB L3 Info',
         'banners': banners,
         'menus': menus,
         'sections': sections,
         'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
         'awards_block': awards_block,
         'gallery_block': gallery_block,
         'shopping_block': shopping_block,
         'gallery_images': gallery_images,
         'shopping_images': shopping_images,
-        'since_section': since_section,
         'services_blocks': services_blocks,
-        'connect_section': connect_section,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
 
-        
     }
 
     return render(request, 'website/index.html', context)
+
 
 # -------------------------
 # Page About
 # -------------------------
 def about(request):
-    about_sections = Section.objects.filter(template='about')
-    banners = Banner.objects.all() # récupère toutes les bannières
+    # Bannières et menus
+    banners = Banner.objects.all().order_by('cree_le')
+    menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
+    sections = Section.objects.all()
+    slides = Slider.objects.filter(est_actif=True)
+    
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
+
+    # Blocs spécifiques
+    awards_block = BlockTitle.objects.filter(section='awards').first()
+    gallery_block = BlockTitle.objects.filter(section='gallery').first()
+    shopping_block = BlockTitle.objects.filter(section='shopping').first()
+
+    gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
+    shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
+
 
     context = {
-        'title': 'About - TP WEB L3 Info',
-        'about_sections': about_sections,
-        'banners': banners,  # on passe les bannières au template
+        'title': 'TP WEB L3 Info',
+        'banners': banners,
+        'menus': menus,
+        'sections': sections,
+        'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
+        'awards_block': awards_block,
+        'gallery_block': gallery_block,
+        'shopping_block': shopping_block,
+        'gallery_images': gallery_images,
+        'shopping_images': shopping_images,
+        'services_blocks': services_blocks,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
+
     }
     return render(request, 'website/about.html', context)
 
@@ -65,12 +139,63 @@ def about(request):
 # Page Contact
 # -------------------------
 def contact(request):
-    banners = Banner.objects.all()  # récupère toutes les bannière
+    # Bannières et menus
+    banners = Banner.objects.all().order_by('cree_le')
     menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
+    sections = Section.objects.all()
+    slides = Slider.objects.filter(est_actif=True)
+    
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
+
+    # Blocs spécifiques
+    awards_block = BlockTitle.objects.filter(section='awards').first()
+    gallery_block = BlockTitle.objects.filter(section='gallery').first()
+    shopping_block = BlockTitle.objects.filter(section='shopping').first()
+
+    gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
+    shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
+
+
     context = {
-        'title': 'Contact - TP WEB L3 Info',
+        'title': 'TP WEB L3 Info',
+        'banners': banners,
         'menus': menus,
-        'banners': banners,  # ici on ajoute les banners au contexte
+        'sections': sections,
+        'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
+        'awards_block': awards_block,
+        'gallery_block': gallery_block,
+        'shopping_block': shopping_block,
+        'gallery_images': gallery_images,
+        'shopping_images': shopping_images,
+        'services_blocks': services_blocks,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
+
     }
     return render(request, 'website/contact.html', context)
 
@@ -78,20 +203,124 @@ def contact(request):
 # Page Services
 # -------------------------
 def services(request):
-    services_sections = Section.objects.filter(template='services')
-    banners = Banner.objects.all()  # récupère toutes les bannière
+    # Bannières et menus
+    banners = Banner.objects.all().order_by('cree_le')
+    menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
+    sections = Section.objects.all()
+    slides = Slider.objects.filter(est_actif=True)
+    
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
+
+    # Blocs spécifiques
+    awards_block = BlockTitle.objects.filter(section='awards').first()
+    gallery_block = BlockTitle.objects.filter(section='gallery').first()
+    shopping_block = BlockTitle.objects.filter(section='shopping').first()
+
+    gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
+    shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
+
+
     context = {
-        'title': 'Services - TP WEB L3 Info',
-        'services_sections': services_sections,
-        'banners': banners,  # ici on ajoute les banners au contexte
+        'title': 'TP WEB L3 Info',
+        'banners': banners,
+        'menus': menus,
+        'sections': sections,
+        'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
+        'awards_block': awards_block,
+        'gallery_block': gallery_block,
+        'shopping_block': shopping_block,
+        'gallery_images': gallery_images,
+        'shopping_images': shopping_images,
+        'services_blocks': services_blocks,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
+
     }
     return render(request, 'website/our-services.html', context)
 
 def services_details(request):
-    services_details_sections = Section.objects.filter(template='services-detail')
+    # Bannières et menus
+    banners = Banner.objects.all().order_by('cree_le')
+    menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
+    sections = Section.objects.all()
+    slides = Slider.objects.filter(est_actif=True)
+    
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
+
+    # Blocs spécifiques
+    awards_block = BlockTitle.objects.filter(section='awards').first()
+    gallery_block = BlockTitle.objects.filter(section='gallery').first()
+    shopping_block = BlockTitle.objects.filter(section='shopping').first()
+
+    gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
+    shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
+
+
     context = {
-        'title': 'Service Detail - TP WEB L3 Info',
-        'services_details_sections': services_details_sections,
+        'title': 'TP WEB L3 Info',
+        'banners': banners,
+        'menus': menus,
+        'sections': sections,
+        'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
+        'awards_block': awards_block,
+        'gallery_block': gallery_block,
+        'shopping_block': shopping_block,
+        'gallery_images': gallery_images,
+        'shopping_images': shopping_images,
+        'services_blocks': services_blocks,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
+
     }
     return render(request, 'website/services-detail.html', context)
 
@@ -99,10 +328,63 @@ def services_details(request):
 # Page Gallery
 # -------------------------
 def gallery(request):
-    gallery_sections = Section.objects.filter(template='gallery')
+    # Bannières et menus
+    banners = Banner.objects.all().order_by('cree_le')
+    menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
+    sections = Section.objects.all()
+    slides = Slider.objects.filter(est_actif=True)
+    
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
+
+    # Blocs spécifiques
+    awards_block = BlockTitle.objects.filter(section='awards').first()
+    gallery_block = BlockTitle.objects.filter(section='gallery').first()
+    shopping_block = BlockTitle.objects.filter(section='shopping').first()
+
+    gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
+    shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
+
+
     context = {
-        'title': 'Gallery - TP WEB L3 Info',
-        'gallery_sections': gallery_sections,
+        'title': 'TP WEB L3 Info',
+        'banners': banners,
+        'menus': menus,
+        'sections': sections,
+        'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
+        'awards_block': awards_block,
+        'gallery_block': gallery_block,
+        'shopping_block': shopping_block,
+        'gallery_images': gallery_images,
+        'shopping_images': shopping_images,
+        'services_blocks': services_blocks,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
+
     }
     return render(request, 'website/gallery.html', context)
 
@@ -110,8 +392,63 @@ def gallery(request):
 # Page Team
 # -------------------------
 def team(request):
+    # Bannières et menus
+    banners = Banner.objects.all().order_by('cree_le')
+    menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
+    sections = Section.objects.all()
+    slides = Slider.objects.filter(est_actif=True)
+    
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
+
+    # Blocs spécifiques
+    awards_block = BlockTitle.objects.filter(section='awards').first()
+    gallery_block = BlockTitle.objects.filter(section='gallery').first()
+    shopping_block = BlockTitle.objects.filter(section='shopping').first()
+
+    gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
+    shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
+
+
     context = {
-        'title': 'Team - TP WEB L3 Info',
+        'title': 'TP WEB L3 Info',
+        'banners': banners,
+        'menus': menus,
+        'sections': sections,
+        'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
+        'awards_block': awards_block,
+        'gallery_block': gallery_block,
+        'shopping_block': shopping_block,
+        'gallery_images': gallery_images,
+        'shopping_images': shopping_images,
+        'services_blocks': services_blocks,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
+
     }
     return render(request, 'website/team.html', context)
 
@@ -119,10 +456,63 @@ def team(request):
 # Page Pricing
 # -------------------------
 def prix(request):
-    pricing_sections = Section.objects.filter(template='pricing')
+    # Bannières et menus
+    banners = Banner.objects.all().order_by('cree_le')
+    menus = Menu.objects.all().order_by('ordre')
+    
+    # Sections classiques
+    sections = Section.objects.all()
+    slides = Slider.objects.filter(est_actif=True)
+    
+    # Sections dynamiques ParagraphSection
+    since_section = ParagraphSection.objects.filter(section_type='since').first()
+    connect_section = ParagraphSection.objects.filter(section_type='connect').first()
+    
+    # Sections dynamiques TitleSection
+    title_sections = TitleSection.objects.all().prefetch_related('elements')  # récupère les ParagraphTitleAndManyElement liés
+
+    # Blocs spécifiques
+    awards_block = BlockTitle.objects.filter(section='awards').first()
+    gallery_block = BlockTitle.objects.filter(section='gallery').first()
+    shopping_block = BlockTitle.objects.filter(section='shopping').first()
+
+    gallery_images = gallery_block.images.all().order_by('-id')[:10] if gallery_block else []
+    shopping_images = shopping_block.images.all().order_by('-id')[:5] if shopping_block else []
+        # Récupération de la section "Savor the Savings"
+    savor_section = TitleSection.objects.filter(title="Savor the Savings").first()
+    features_elements = savor_section.elements.all() if savor_section else []
+    
+    testimonial_section = TitleSection.objects.filter(section_type='testimonials').first()
+    testimonials = testimonial_section.elements.all() if testimonial_section else []
+
+    services_blocks = ServicesBlock.objects.order_by('order')[:3]
+    
+    pricing_section = TitleSection.objects.filter(section_type="cheap_pricing").first()
+    pricing_items = ParagraphTitleAndManyElement.objects.filter(section=pricing_section).order_by('order') if pricing_section else []
+
+
     context = {
-        'title': 'Pricing - TP WEB L3 Info',
-        'pricing_sections': pricing_sections,
+        'title': 'TP WEB L3 Info',
+        'banners': banners,
+        'menus': menus,
+        'sections': sections,
+        'sliders': slides,
+        'since_section': since_section,
+        'connect_section': connect_section,
+        'title_sections': title_sections,
+        'awards_block': awards_block,
+        'gallery_block': gallery_block,
+        'shopping_block': shopping_block,
+        'gallery_images': gallery_images,
+        'shopping_images': shopping_images,
+        'services_blocks': services_blocks,
+        'savor_section': savor_section,
+        'features_elements': features_elements,
+        'testimonial_section': testimonial_section,
+        'testimonials': testimonials,
+        'pricing_section': pricing_section,
+        'pricing_items': pricing_items,
+
     }
     return render(request, 'website/pricing.html', context)
 

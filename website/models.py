@@ -317,53 +317,64 @@ class SliderLayer(models.Model):
     def __str__(self):
         return f"Layer {self.type_layer} pour slide {self.slide.id}"
 
-# ere Testimonials, Cheap Pricing, Our Team, Savor the Savings Stay Informed
+from django.db import models
+
+# -----------------------------
+# Titre de section
+# -----------------------------
 class TitleSection(models.Model):
-        SECTION_CHOICES = [
+    SECTION_CHOICES = [
         ('testimonials', 'Testimonials'),
         ('cheap_pricing', 'Cheap Pricing'),
         ('our_team', 'Our Team'),
         ('savor_savings', 'Savor the Savings'),
         ('stay_informed', 'Stay Informed'),
     ]
-        title = models.CharField(max_length=200, help_text="Titre principal")
-        subtitle = models.CharField(max_length=200, blank=True, null=True, help_text="Sous-titre")
-        description = models.TextField(blank=True, null=True, help_text="Description longue")
 
-        class Meta:
-            verbose_name = "Section Titre"
-            verbose_name_plural = "Sections Titre"
-        
-
-        def __str__(self):
-           return self.title
-    
-
-class ParagraphTitleAndManyElement(models.Model):
-    
-    section = models.ForeignKey(
-        ParagraphSection,
-        on_delete=models.CASCADE,
-        related_name='elements',
-        help_text="Choisir la section à laquelle ce paragraphe appartient"
+    section_type = models.CharField(
+        max_length=20,
+        choices=SECTION_CHOICES,
+        default='testimonials',
+        help_text="Choisir le type de section"
     )
     title = models.CharField(max_length=200, help_text="Titre principal")
     subtitle = models.CharField(max_length=200, blank=True, null=True, help_text="Sous-titre")
     description = models.TextField(blank=True, null=True, help_text="Description longue")
+    image = models.ImageField(upload_to='image/',null=True, blank=True) # accessible via MEDIA_URL
+
+    class Meta:
+        verbose_name = "Section Titre"
+        verbose_name_plural = "Sections Titre"
+
+    def __str__(self):
+        return self.title
+
+
+# -----------------------------
+# Paragraphe lié à une section
+# -----------------------------
+class ParagraphTitleAndManyElement(models.Model):
+    section = models.ForeignKey(
+        TitleSection,  # lien vers TitleSection
+        on_delete=models.CASCADE,
+        related_name='elements',
+        help_text="Choisir la section à laquelle ce paragraphe appartient"
+    )
+    description_carrouselle = models.TextField(blank=True, null=True, help_text="Description pour le commentaire defilnt")
     name = models.CharField(max_length=200, default="Texte par défaut")
-    job = models.CharField(max_length=200, default="Texte par défaut")
-    position = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='image/')  # sera accessible via MEDIA_URL
+    job = models.CharField(max_length=200, default="Texte par défaut",null=True, blank=True)
+    adresse = models.CharField(max_length=20, null=True, blank=True)
+    position = models.CharField(max_length=100, null=True, blank=True)
+    image_caroussel = models.ImageField(upload_to='image/',blank=True, null=True)
     twitter = models.URLField(blank=True, null=True)
     facebook = models.URLField(blank=True, null=True)
     dribbble = models.URLField(blank=True, null=True)
     linkedin = models.URLField(blank=True, null=True)
     behance = models.URLField(blank=True, null=True)
-    button = models.CharField(max_length=100, blank=True, null=True, help_text="Text du bouton principal")
-    montant = models.IntegerField(null=True, blank=True)
-    avantage_prix = models.CharField(null=True, blank=True, max_length=200)
-    button_text = models.CharField(max_length=200, blank=True, null=True, help_text="Description du bouton principal")
-
+    button = models.CharField(max_length=100, blank=True, null=True, help_text="Texte du bouton principal")
+    button_text = models.TextField( blank=True, null=True, help_text="Texte supplémentaire du bouton")
+    montant = models.IntegerField(blank=True, null=True)
+    avantage_prix = models.CharField(max_length=200, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=True, null=True, help_text="Ordre d'affichage")
 
     class Meta:
@@ -371,5 +382,3 @@ class ParagraphTitleAndManyElement(models.Model):
         verbose_name = "Paragraph Title & Element"
         verbose_name_plural = "Paragraph Titles & Elements"
 
-    def __str__(self):
-        return self.title
